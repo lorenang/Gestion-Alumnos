@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('inscripcionCarrera_estado');
             $table->string('usuario', 100);
             // FK con Carreras
-            $table->foreignId('carrera_id')->constrained('Carreras');
+            $table->foreignId('carrera_id')->constrained('Carreras', 'carrera_id');
             // FK con Alumnos
-            $table->foreignId('alumno_id')->constrained('Alumnos');
+            $table->foreignId('alumno_id')->constrained('Alumnos', 'alumno_id');
             $table->timestamps();
             $table->softdeletes();
         });

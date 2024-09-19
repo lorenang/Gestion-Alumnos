@@ -16,7 +16,8 @@ class RegistroEstadosMaterias extends Model
         'usuario',
         'alumno_id',
         'materia_id',
-        'estadoMateria_id'
+        'estadoMateria_id',
+        'materia_nota'
     ];
 
     // Relación con el modelo Alumno (un registro pertenece a un alumno)

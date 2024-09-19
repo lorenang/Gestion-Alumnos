@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('materia_duracion');
             $table->string('usuario', 100);
             // FK con Carreras
-            $table->foreignId('carrera_id')->constrained('Carreras');
+            $table->foreignId('carrera_id')->constrained('Carreras', 'carrera_id');
             $table->timestamps();
             $table->softdeletes();
         });

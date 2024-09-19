@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('RegistroEstadosMaterias', function (Blueprint $table) {
             $table->id('registroEstadoMateria_id');
             $table->string('usuario', 100);
+            // Registro de la nota. Si la nota tiene decimales con precisión, mejor usar decimal.
+            $table->decimal('materia_nota', 5, 2)->nullable(); // hasta 999.99 de nota
             //FK con Alumnos
-            $table->foreignId('alumno_id')->constrained('Alumnos');
+            $table->foreignId('alumno_id')->constrained('Alumnos', 'alumno_id');
             //FK con Materias
-            $table->foreignId('materia_id')->constrained('Materias');
+            $table->foreignId('materia_id')->constrained('Materias', 'materia_id');
             //FK con EstadosMaterias
-            $table->foreignId('estadoMateria_id')->constrained('EstadosMaterias');
+            $table->foreignId('estadoMateria_id')->constrained('EstadosMaterias', 'estadoMateria_id');
             $table->timestamps();
             $table->softdeletes();
         });
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('registro_estados_materias');
+        Schema::dropIfExists('RegistroEstadosMaterias');
     }
 };

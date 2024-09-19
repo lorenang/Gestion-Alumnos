@@ -14,7 +14,9 @@ class HistorialEstadosMaterias extends Model
     protected $fillable = [
         'historialEstadoMateria_id',
         'registroEstadoMateria_id',
-        'estadoMateria_id'
+        'estadoMateria_id',
+        'materia_nota',
+        'usuario'
     ];
 
     // Relación con el modelo RegistroEstadoMateria (un historial pertenece a un registro)
