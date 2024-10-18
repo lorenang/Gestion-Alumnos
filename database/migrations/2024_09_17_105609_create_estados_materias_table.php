@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('EstadosMaterias', function (Blueprint $table) {
             $table->id('estadoMateria_id');
-            $table->string('estadoMateria_estado');
+            $table->string('estadoMateria_estado', 50);
             $table->string('usuario', 100);
             $table->timestamps();
             $table->softdeletes();

@@ -1,0 +1,192 @@
+--RECURSOS--
+https://dcreations.es/blog/laravel/introduccion-a-laravel-filament
+https://wwwhatsnew.com/2023/03/17/filament-el-panel-de-administracion-para-tus-proyectos-en-tall-stack/
+
+--
+PASO 1: composer create-project --prefer-dist laravel/laravel gestion-alumnos "10.*" o composer create-project laravel/laravel:^10.0 gestion-alumnos 
+PASO 2:  cd gestion-alumnos
+PASO 3: composer require filament/filament:"^2.*"
+
+---
+Si al ejecutar da este error:
+The "2.0" constraint for "filament/filament" appears too strict and will likely not match what you want. See https://getcomposer.org/constraints                                                                                                      
+./composer.json has been updated
+Running composer update filament/filament
+Loading composer repositories with package information
+Updating dependencies
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1                                                                                                                
+    - Root composer.json requires filament/filament 2.0 (exact version match: 2.0, 2.0.0 or 2.0.0.0), found filament/filament[dev-3.x-alpha, v0.1.0, v1.0.0, ..., 1.x-dev, v2.0.0-beta1, ..., 2.x-dev, v3.0.0-alpha1, ..., 3.x-dev] but it does not match the constraint.                                                                                                        
+                                                                                                                           
+
+Installation failed, reverting ./composer.json and ./composer.lock to their original content.
+
+
+está relacionado con la extensión intl que falta en tu configuración de PHP. Para resolver este problema y continuar con la instalación de Filament, sigue los siguientes pasos:
+
+Solucion:
+1. Habilitar la extensión intl en PHP
+La extensión intl es necesaria para Filament, por lo que deberás activarla en tu configuración de PHP.
+
+Si estás utilizando XAMPP:
+Abre el archivo php.ini. Puedes encontrarlo en la carpeta de instalación de XAMPP. Puede ser: C:\xampp\php\php.ini
+
+Busca la línea que tiene ;extension=intl y elimínale el punto y coma (;), dejando la línea así:
+extension=intl
+
+ Verificar que la extensión está habilitada
+
+Una vez que hayas habilitado la extensión intl, puedes verificar que esté habilitada ejecutando en la terminal:
+php -m
+Este comando te mostrará un listado de todas las extensiones de PHP que están habilitadas. Busca intl en la lista.
+------
+PASO 4: php artisan make:filament-user
+
+PASO 5:
+//Migraciones y Modelos
+php artisan make:model Alumnos -m
+php artisan make:model Carreras -m
+php artisan make:model Materias -m
+php artisan make:model EstadosMaterias -m      
+php artisan make:model InscripcionesCarreras -m   
+php artisan make:model RegistroEstadosMaterias -m 
+php artisan make:model HistorialEstadosMaterias -m 
+
+//Seeders
+php artisan make:seeder AlumnosSeeder
+php artisan make:seeder CarrerasSeeder
+php artisan make:seeder MateriasSeeder
+php artisan make:seeder EstadosMateriasSeeder
+
+php artisan migrate --seed
+
+// si deseas modificar tabla 
+php artisan make:migration add_estado_to_alumnos_table --table=Alumnos
+
+//Creando recursos
+php artisan make:filament-resource AlumnosResource --generate 
+php artisan make:filament-resource CarrerasResource --generate
+php artisan make:filament-resource MateriasResource --generate 
+php artisan make:filament-resource UserResource --generate
+//->sortable() para permitir el ordenamiento por estos campos.
+// ->searchable() para permitir la busqueda por estos campos.
+
+Agregar una página Ver a un recurso existente
+Si desea agregar una página Ver a un recurso existente, cree una nueva página en su recurso Pages directorio:
+
+php artisan make:filament-page ViewAlumno --resource=AlumnosResource --type=ViewRecord //solo controlador
+php artisan make:filament-page ViewAlumno --resource=AlumnosResource --type=custom //con pagina de front para customizar
+
+
+-----
+composer install --optimize-autoloader --no-dev
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+npm run watch
+
+
+
+--CONFIGURACIONES EXTRA--
+Configurar el idioma en config/app.php
+/*
+    |--------------------------------------------------------------------------
+    | Application Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The application locale determines the default locale that will be used
+    | by the translation service provider. You are free to set this value
+    | to any of the locales which will be supported by the application.
+    |
+    */
+
+    'locale' => 'es',
+
+publicar la configuración del paquete utilizando:
+
+php artisan vendor:publish --tag=filament-config
+
+y modificar a dark_mode:
+/*
+    |--------------------------------------------------------------------------
+    | Dark mode
+    |--------------------------------------------------------------------------
+    |
+    | By enabling this feature, your users are able to select between a light
+    | and dark appearance for the admin panel, or let their system decide.
+    |
+    */
+
+    'dark_mode' => true,
+
+
+para traducir el paquete:
+Si desea traducir el paquete, puede publicar los archivos de idioma utilizando:
+
+php artisan vendor:publish --tag=filament-translations
+
+Dado que este paquete depende de otros paquetes de filament, es posible que desee traducirlos también:
+
+php artisan vendor:publish --tag=forms-translations
+php artisan vendor:publish --tag=tables-translations
+php artisan vendor:publish --tag=filament-support-translations
+
+
+--
+DELIMITER //
+
+CREATE FUNCTION get_next_legajo()
+RETURNS VARCHAR(10)
+DETERMINISTIC
+BEGIN
+    DECLARE next_legajo INT;
+    DECLARE current_year VARCHAR(4);
+
+    SET current_year = YEAR(CURDATE());
+
+    -- Obtener el último legajo para el año actual
+    SELECT IFNULL(MAX(CAST(SUBSTRING_INDEX(inscripcionCarrera_legajo, '/', 1) AS UNSIGNED)), 0) + 1 
+    INTO next_legajo
+    FROM inscripcionescarreras
+    WHERE inscripcionCarrera_legajo LIKE CONCAT('%/', current_year);
+
+    -- Devolver el nuevo legajo en el formato '1/2023'
+    RETURN CONCAT(next_legajo, '/', current_year);
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER after_insert_inscripcionescarreras
+BEFORE INSERT ON inscripcionescarreras
+FOR EACH ROW
+BEGIN
+    -- Asigna el nuevo legajo usando la función
+    SET NEW.inscripcionCarrera_legajo = get_next_legajo();
+END //
+
+DELIMITER ;
+----
+
+//modificar en lang/vendor/filament/es lo necesario paramodificar el front 
+---
+COMANDOS UTILES DE FILAMENT: 
+ ⇂ php artisan filament:check-translations
+Este comando verifica si las traducciones de Filament están completas o si hay algún archivo de traducción que falte. Puede ser útil si trabajas con múltiples idiomas y necesitas comprobar la consistencia de las traducciones.
+  ⇂ filament:upgrade
+Este comando se usa para actualizar Filament a una nueva versión. Dependiendo de la versión que tengas instalada, este comando aplicará los cambios necesarios para hacer la transición entre versiones de manera segura.
+  ⇂ forms:install
+Instala los recursos necesarios para trabajar con formularios en Filament. Esto incluye configuraciones, plantillas o componentes que te ayudarán a manejar los formularios de manera eficiente dentro de Filament.
+  ⇂ migrate:install
+Este comando prepara la base de datos para migraciones, generando la tabla donde se almacenarán las migraciones aplicadas. Normalmente, es un paso previo a la ejecución de migraciones.
+  ⇂ notifications:install
+Instala el sistema de notificaciones de Filament, lo cual es útil si planeas enviar notificaciones a través de la interfaz o backend de tu sistema.
+  ⇂ sail:install
+Si estás usando Laravel Sail (el entorno Docker para Laravel), este comando instalará Sail y lo preparará para su uso. Si no estás utilizando Docker, este paso no sería necesario.
+  ⇂ tables:install
+Este comando instala los recursos necesarios para manejar tablas dinámicas y avanzadas en Filament. Incluye funcionalidades para paginación, filtrado y clasificación de datos en tablas.
+

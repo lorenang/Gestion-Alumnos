@@ -20,15 +20,24 @@ class Alumnos extends Model
         'usuario'
     ];
 
-    // Relación con la tabla InscripcionesCarreras (un alumno puede tener muchas inscripciones)
-    public function inscripcionesCarreras()
-    {
+    // Relación muchos a muchos con la tabla Carreras, a través de InscripcionesCarreras
+    public function carreras() {
+        return $this->belongsToMany(Carreras::class, 'InscripcionesCarreras', 'alumno_id', 'carrera_id')
+                    ->withPivot('inscripcionCarrera_legajo', 'inscripcionCarrera_estado', 'usuario');
+    }
+
+    public function inscripcionesCarreras() {
         return $this->hasMany(InscripcionesCarreras::class, 'alumno_id');
     }
 
-    // Relación con la tabla RegistroEstadosMaterias (un alumno puede estar inscrito en varias materias)
-    public function registroEstadosMaterias()
-    {
+    
+    // Relación muchos a muchos con la tabla Materias, a través de RegistroEstadosMaterias
+    public function materias() {
+        return $this->belongsToMany(Materias::class, 'RegistroEstadosMaterias', 'alumno_id', 'materia_id')
+                    ->withPivot('materia_nota', 'estadoMateria_id', 'usuario');
+    }
+
+    public function inscripcionesMaterias() {
         return $this->hasMany(RegistroEstadosMaterias::class, 'alumno_id');
     }
 

@@ -25,8 +25,10 @@ class Carreras extends Model
     }
  
     // Relación con la tabla InscripcionesCarreras (una carrera puede tener muchas inscripciones de alumnos)
-    public function inscripcionesCarreras()
+    public function inscripcionesCarrerasAlumnos()
     {
-        return $this->hasMany(InscripcionesCarreras::class, 'carrera_id');
+        return $this->belongsToMany(Alumnos::class, 'InscripcionesCarreras', 'carrera_id', 'alumno_id');
     }
+
+    
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Materias;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -63,5 +64,9 @@ class MateriasSeeder extends Seeder
                 'usuario' => 'seeder',
             ],
         ];
+
+        foreach ($materias as $materia) {
+            Materias::create($materia);
+        }
     }
 }

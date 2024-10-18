@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\EstadosMaterias;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -38,5 +39,9 @@ class EstadosMateriasSeeder extends Seeder
                 'usuario' => 'seeder'
             ],
         ];
+
+        foreach ($estados as $estado) {
+            EstadosMaterias::create($estado);
+        }
     }
 }

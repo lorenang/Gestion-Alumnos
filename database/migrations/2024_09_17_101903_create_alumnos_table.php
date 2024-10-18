@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('alumno_dni')->unique();
             $table->string('alumno_telefono', 15);
             $table->string('alumno_correo', 100)->unique();
+            $table->enum('alumno_estado', ['ACTIVO', 'INACTIVO'])->default('Activo');
             $table->string('usuario', 100);
             $table->timestamps();
             $table->softdeletes();

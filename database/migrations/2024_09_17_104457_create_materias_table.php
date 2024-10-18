@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('Materias', function (Blueprint $table) {
             $table->id('materia_id');
-            $table->string('materia_nombre');
+            $table->string('materia_nombre', 150);
             $table->integer('materia_horasCursado');
             $table->string('materia_duracion');
             $table->string('usuario', 100);

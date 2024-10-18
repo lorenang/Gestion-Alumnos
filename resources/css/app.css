@@ -1,0 +1,7 @@
+@import '../../vendor/filament/forms/dist/module.esm.css';
+@import "@fortawesome/fontawesome-free/css/all.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
