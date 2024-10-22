@@ -44,19 +44,19 @@ class InscripcionCarrera extends Component
                         'inscripcionCarrera_estado' => $this->selectedEstadoCarrera,
                         'usuario' => Auth()->user()->name,
                     ]);
-                    $this->emit('carreraAdd');
-                    $this->resetFields();
                     session()->flash('successInscripcionCarrera', 'INSCRIPCION REALIZADA.');
                 }
+                $this->emit('carreraAdd');
+                $this->resetFields();
             }
         } catch (Exception $e) {
-            session()->flash('errorInscripcion', $e);
+            session()->flash('errorInscripcionCarrera', $e);
         }
     }
 
     private function resetFields() {
         $this->reset(
-            'selectedCarrera',
+'selectedCarrera',
             'selectedEstadoCarrera'
         );
     }
@@ -66,8 +66,8 @@ class InscripcionCarrera extends Component
         $insCarrera->update([
             'inscripcionCarrera_estado' => $this->selectedEstadoCarrera,
         ]);
-        $this->emit('carreraAdd');
-        $this->resetFields();
+        // $this->emit('carreraAdd');
+        // $this->resetFields();
         return redirect()->to('/admin/alumnos/' . $this->alumno_id)->with('successInscripcionCarrera', 'ALUMNO YA SE ENCUENTRA INSCRIPTO. ESTADO ACTUALIZADO.');
     }
 }

@@ -13,6 +13,7 @@
                             <th class="px-4 py-2 text-gray-700 dark:text-gray-300">Materia</th>
                             <th class="px-4 py-2 text-gray-700 dark:text-gray-300">Carrera</th>
                             <th class="px-4 py-2 text-gray-700 dark:text-gray-300">Estado</th>
+                            <th class="px-4 py-2 text-gray-700 dark:text-gray-300">Nota</th>
                             <th class="px-4 py-2 text-gray-700 dark:text-gray-300">Acciones</th>
                         </tr>
                     </thead>
@@ -29,7 +30,7 @@
                                     <select wire:model="editEstadoMateria.{{ $materia->registroEstadoMateria_id }}"
                                         class="block w-full mt-2 p-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 text-black dark:text-white bg-white dark:bg-gray-800">
                                         @if ($materia->estadoMateria_id)
-                                            <option value="{{ $materia->estadoMateria->estadoMateria_id }}" selected>
+                                            <option value="{{ $materia->estadoMateria_id }}" selected>
                                                 {{ $materia->estadoMateria->estadoMateria_estado }}</option>
                                         @else
                                             <option value="" selected>Seleccione una opcion</option>
@@ -39,6 +40,9 @@
                                                 {{ $estado->estadoMateria_estado }}</option>
                                         @endforeach
                                     </select>
+                                </td>
+                                <td class="border px-4 py-2 text-gray-800 dark:text-gray-200">
+                                    {{ $materia->materia_nota}}
                                 </td>
                                 <td class="border px-4 py-2 text-gray-800 dark:text-gray-200">
                                     <button wire:click="editRegistroMateria({{ $materia->registroEstadoMateria_id }})">
@@ -67,25 +71,25 @@
             @endif
         </div>
         <div class="flex justify-center mt-4">
-            @if (session()->has('successMateria'))
+            @if (session()->has('successEditMateria'))
                 <div class="text-green-500 dark:text-green-400 mt-2">
                     {{ session('successEditMateria') }}
                 </div>
             @endif
-            @if (session()->has('errorEditCarrera'))
+            @if (session()->has('errorEditMateria'))
                 <div class="text-red-500 dark:text-red-400 mt-2">
                     {{ session('errorEditMateria') }}
                 </div>
             @endif
 
-            @if (session()->has('successDeleteCarrera'))
+            @if (session()->has('successDeleteMateria'))
                 <div class="text-green-500 dark:text-green-400 mt-2">
-                    {{ session('successDeleteCarrera') }}
+                    {{ session('successDeleteMateria') }}
                 </div>
             @endif
-            @if (session()->has('errorDeleteCarrera'))
+            @if (session()->has('errorDeleteMateria'))
                 <div class="text-red-500 dark:text-red-400 mt-2">
-                    {{ session('errorDeleteCarrera') }}
+                    {{ session('errorDeleteMateria') }}
                 </div>
             @endif
         </div>

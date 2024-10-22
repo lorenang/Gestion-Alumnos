@@ -14,13 +14,14 @@ class Materias extends Component
     public $alumno_id;
     public $editEstadoMateria; 
 
+    public $listeners = ['materiaAdd' => 'render'];
     public function mount($alumno_id): void
     {
         $this->alumno_id = $alumno_id;
         // Inicializar los estados para cada materia
         $alumno = Alumnos::findOrFail($this->alumno_id);
         foreach ($alumno->inscripcionesMaterias as $materia) {
-            $this->editEstadoMateria[$materia->materia_id] = $materia->estadoMateria_id;
+            $this->editEstadoMateria[$materia->registroEstadoMateria_id] = $materia->estadoMateria_id;
         }
     }
     public function render()
@@ -58,7 +59,7 @@ class Materias extends Component
             $registroMateria->delete();
             session()->flash('successDeleteMateria', 'REGISTRO ELIMINADO.');
         } catch (Exception $e) {
-            session()->flash('error}DeleteMateria', $e);
+            session()->flash('errorDeleteMateria', $e);
         }
     }
 }
